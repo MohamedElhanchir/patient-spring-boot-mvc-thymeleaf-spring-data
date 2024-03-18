@@ -19,11 +19,11 @@ public class PatientmvcApplication {
     @Bean
     CommandLineRunner start(PatientRepository patientRepository) {
         return args -> {
-            patientRepository.save(new Patient(null, "Hassan", new Date(), false, 4));
-            patientRepository.save(new Patient(null, "Khalid", new Date(), false, 5));
-            patientRepository.save(new Patient(null, "Omar", new Date(), true, 6));
-            patientRepository.save(new Patient(null, "Salma", new Date(), false, 7));
-            patientRepository.save(new Patient(null, "Hanae", new Date(), true, 8));
+            patientRepository.save(new Patient(null, "Hassan", new Date(), false, 400));
+            patientRepository.save(new Patient(null, "Khalid", new Date(), false, 500));
+            patientRepository.save(new Patient(null, "Omar", new Date(), true, 600));
+            patientRepository.save(new Patient(null, "Salma", new Date(), false, 700));
+            patientRepository.save(new Patient(null, "Hanae", new Date(), true, 800));
         };
     }
 

@@ -1,5 +1,6 @@
 package ma.enset.patientmvc.web;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import ma.enset.patientmvc.entities.Patient;
 import ma.enset.patientmvc.repositories.PatientRepository;
@@ -7,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -55,5 +58,28 @@ public class PatientController {
     @ResponseBody
     public List<Patient> patients() {
         return patientRepository.findAll();
+    }
+
+    @GetMapping(path = "/formPatients")
+    public String formPatients(Model model){
+        model.addAttribute("patient", new Patient());
+        return "formPatients";
+    }
+
+    @PostMapping(path = "/save")
+    public String save(Model model, @Valid Patient patient, BindingResult bindingResult){
+        if(bindingResult.hasErrors()) return "formPatients";
+        patientRepository.save(patient);
+        return "redirect:/index";
+    }
+
+
+    @GetMapping(path = "/edit")
+    public String edit(Model model,Long id){
+        Patient patient = patientRepository.findById(id).orElse(null);
+        if (patient == null) throw new RuntimeException("Patient not found");
+        model.addAttribute("patient", patient);
+        return "editPatient";
+        //return "redirect:/index?page="+page+"&size="+size+"&keyword="+keyword;
     }
 }
