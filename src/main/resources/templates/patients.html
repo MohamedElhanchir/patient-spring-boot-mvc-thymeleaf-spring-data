@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="template1">
+      layout:decorate="template1"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -26,7 +28,7 @@ layout:decorate="template1">
                     <th>Date of birth</th>
                     <th>Malady</th>
                     <th>Score</th>
-                    <th rowspan="2">Actions</th>
+                    <th rowspan="2" sec:authorize="hasRole('ADMIN')">Actions</th>
                 </tr>
                 </thead>
 
@@ -37,12 +39,13 @@ layout:decorate="template1">
                     <td th:text="${patient.dateOfBirth}"></td>
                     <td th:text="${patient.malady}"></td>
                     <td th:text="${patient.score}"></td>
-                    <td>
+                    <td sec:authorize="hasRole('ADMIN')">
                         <a onclick="return confirm('Are you sure??')" th:href="@{delete(id=${patient.id},size=${size},
                         page=${currentPage},keyword=${keyword})}" class="btn btn-danger">
                             Delete</a>
 
-                        <a  th:href="@{edit(id=${patient.id})}" class="btn btn-success">
+                        <a  th:href="@{edit(id=${patient.id},size=${size},
+                           page=${currentPage},keyword=${keyword})}" class="btn btn-success">
                             Edit</a>
                     </td>
 

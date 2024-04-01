@@ -45,7 +45,7 @@ public class PatientController {
 
     @GetMapping(path = "/")
     public String home(){
-        return "redirect:/index";
+        return "home";
     }
 
     @GetMapping(path = "/delete")
@@ -66,19 +66,39 @@ public class PatientController {
         return "formPatients";
     }
 
+
+
     @PostMapping(path = "/save")
-    public String save(Model model, @Valid Patient patient, BindingResult bindingResult){
+    public String save(@Valid Patient patient,
+                       BindingResult bindingResult){
         if(bindingResult.hasErrors()) return "formPatients";
         patientRepository.save(patient);
         return "redirect:/index";
     }
 
 
+    @PostMapping(path = "/editSave")
+    public String editSave(@Valid Patient patient,
+                           BindingResult bindingResult,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(defaultValue = "5") int size,
+                       @RequestParam(defaultValue = "") String keyword
+                       ){
+        if(bindingResult.hasErrors()) return "editPatient";
+        patientRepository.save(patient);
+        return "redirect:/index?page="+page+"&size="+size+"&keyword="+keyword;
+    }
+
+
+
     @GetMapping(path = "/edit")
-    public String edit(Model model,Long id){
+    public String edit(Model model,Long id,String keyword, int page, int size){
         Patient patient = patientRepository.findById(id).orElse(null);
         if (patient == null) throw new RuntimeException("Patient not found");
         model.addAttribute("patient", patient);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
         return "editPatient";
         //return "redirect:/index?page="+page+"&size="+size+"&keyword="+keyword;
     }
