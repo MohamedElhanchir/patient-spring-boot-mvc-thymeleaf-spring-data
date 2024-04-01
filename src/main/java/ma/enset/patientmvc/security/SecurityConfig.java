@@ -1,36 +1,4 @@
 package ma.enset.patientmvc.security;
-
-/*import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig{
-      public void configure(HttpSecurity http) throws Exception {
-          http.formLogin(Customizer.withDefaults());
-          http.authorizeRequests().anyRequest().authenticated();
-    }
-
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("user1").password("{noop}1234").roles("USER")
-                .and()
-                .withUser("user2").password(passwordEncoder().encode("1234")).roles("USER")
-                .and()
-                .withUser("admin").password(passwordEncoder().encode("1234")).roles("USER", "ADMIN");
-    }
-
-    @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-}
-}*/
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -58,7 +26,7 @@ public class SecurityConfig {
         );
     }
 
-    @Bean
+   /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .formLogin(Customizer.withDefaults())
@@ -71,6 +39,20 @@ public class SecurityConfig {
                 .exceptionHandling(e -> e
                     .accessDeniedPage("/notAuthorized"))
                 .build();
+    }*/
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .formLogin(Customizer.withDefaults())
+                .authorizeHttpRequests(ar -> ar
+                        .requestMatchers("/webjars/**").permitAll()
+                        .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/").permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(e -> e
+                        .accessDeniedPage("/notAuthorized"))
+                .build();
     }
 
     @Bean
@@ -78,17 +60,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    /*
-      @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-            .formLogin(Customizer.withDefaults())
-            .authorizeRequests(ar -> ar
-                .requestMatchers("/deletePatient/**").hasRole("ADMIN")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/user/**").hasRole("USER")
-                .anyRequest().authenticated())
-            .build();
-    }
-     */
 }
